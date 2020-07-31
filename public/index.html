@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" , initial-scale=1.0"/>
+    <title>Foco IOt</title>
+    <script>
+      /* invoca a registraServiceWorker instalar la aplicación en el caché del
+       * navegador. No se espera a que termine el registro. */
+      registraServiceWorker();
+      /** Registra un service worker para instalar la aplicación en el
+       * caché del navegador. La palabra reservada async indica que no espera
+       * a que termine y libera el registro de activación que lo llamó. */
+      async function registraServiceWorker() {
+        if ("serviceWorker" in navigator) {
+          try {
+            /* Registra el service worker y espera que termine. El service
+             * worker debe estar en la carpeta public. La palabra await indica
+             * que espera a que termine y solo puede usarse en una función
+             * async. */
+            const registro = await navigator.serviceWorker.register("sw.js");
+            // Registro correcto y se muestra en la consola.
+            console.log("Service Worker registrado.");
+            console.log(registro);
+          } catch (e) {
+            // Hubo un error en el registro.
+            muestraError(e);
+          }
+        }
+      }
+      /** Procesa una excepción y muestra un mensaje de error.
+       * @param {Error} e descripción del error. */
+      function muestraError(e) {
+        console.log(e);
+        alert(e.message);
+      }
+    </script>
+
+    <!-- Ícono para la página web. Debe ponerse en la raíz de la página. -->
+    <link rel="icon" sizes="32x32" href="favicon.ico" />
+
+    <!-- Color de la barra de navegación de Chrome en dispositivos móviles. -->
+    <meta name="theme-color" content="#0f0817" />
+
+    <!-- Configuración de la PWA: Chrome y Edge. -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Configuración para Web Clip en Safari. -->
+    <meta name="apple-mobile-web-app-title" content="aplipwa" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="img/icono-2048.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="img/60x60.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="img/76x76.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="img/120x120.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="img/152x152.png" />
+    <link rel="apple-touch-icon" sizes="256x256" href="img/icono-256.png" />
+    <link rel="apple-touch-icon" sizes="1024x1024" href="img/icono-1024.png" />
+    <link rel="apple-touch-icon" sizes="2048x2048" href="img/icono-2048.png" />
+
+    <script type="module" src="cmp/mi-footer.js"></script>
+  
+
+    <!-- Carga el núcleo de Firebase. Actualiza los números de versión cuando
+    sea necesario. Hemos quitado el atributo defer que aparecía originalmente.
+    -->
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <title>Control de foco IOt</title>
+
+    <!-- Carga el núcleo de Firebase JS SDK -->
+    <script src="/__/firebase/7.15.1/firebase-app.js"></script>
+    <!-- Agrega el manejo de bases de datos. -->
+    <script src="/__/firebase/7.15.1/firebase-firestore.js"></script>
+    <!-- Configuración de la app web, sustityue esta sección por lo que te
+      indica el sitio de Firebase por tu proyecto. -->
+    <script src="/__/firebase/init.js"></script>
+    <script>
+      const firestore = firebase.firestore();
+      const ID_PROYECTO = "iot51-1a52d";
+      //const ID_PROYECTO = "dmppiot";
+      const ENTIDAD_LUZ = "LUZ";
+      const ENTIDAD_INTENSIDAD = "INTENSIDAD";
+      const ID = "iot1";
+
+      const URL_LUZ = `https://firestore.googleapis.com/v1/projects/${
+        ID_PROYECTO}/databases/(default)/documents/${ENTIDAD_LUZ}/${ID}`;
+      const URL_INTENSIDAD = `https://firestore.googleapis.com/v1/projects/${
+        ID_PROYECTO}/databases/(default)/documents/${ENTIDAD_INTENSIDAD}/${
+        ID}`;
+      const URL_AGREGA = `https://firestore.googleapis.com/v1/projects/${
+        ID_PROYECTO}/databases/(default)/documents/${ENTIDAD_INTENSIDAD}/${
+        ID}/LECTURAS`;
+      const INTERVALO_EN_MILIS = 1000;
+      const MÉTODO_AGREGA = "POST";
+      const MÉTODO_CAMBIOS = "PATCH";
+      const HEADERS_JSON = {
+        "Content-Type": "application/json"
+      };
+      function procesaError(e) {
+        console.log(e);
+        alert(e.message);
+      }
+    </script>
+    <body>
+      <div class="container">
+        <div class="title">
+          Apagador Inteligente
+        </div>
+        
+        <div class="row">
+          <div class="col w100">
+            <label class="iotluz">Luz <output id="iotLuz"></output></label>
+            <label class="switch">
+              <input type="checkbox" id="mpLuz" onchange="luzModificada()"/>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+        
+        <div class="row mt-5">
+          <div class="col w50">
+            <meter id=mpIntensidad low="3" high="7" optimum="5" min="0" max="10"></meter>
+          </div>
+
+          <div class="col w50">
+            <div class="intensidad">Intensidad</div>
+            <div class="slider-wrapper">
+              <input id="iotIntensidad" type="range" min="0" max="10" value="0" step="1" onchange="intensidadModificada();" id="range"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col w100">
+            <div id="foco" class="light-0 mb-5">
+              <img src="img/base.png" class="base" />
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      <script type="text/javascript" src="js/main.js"></script>
+    </body>
+    <mi-footer></mi-footer> 
+</html>
